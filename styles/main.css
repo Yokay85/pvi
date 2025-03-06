@@ -1,0 +1,19 @@
+.content-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar {
+    margin-right: 1rem;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.main-content h2{
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    margin-left: 100px;
+    margin-bottom: 35px;
+}
