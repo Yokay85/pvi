@@ -1,0 +1,41 @@
+.notifications {
+    position: relative;
+    cursor: pointer;
+    margin-right: 30px;
+    top: 2px;
+}
+
+.notifications-popup {
+    max-width: 300px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    display: none;
+    position: absolute;
+    top: 25px;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 10;
+    width: auto;
+    height: auto;
+    margin-left: -50px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.notifications-popup span {
+    display: block;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    word-break: break-word;
+}
+
+.notifications:hover .notifications-popup {
+    display: grid;
+}
