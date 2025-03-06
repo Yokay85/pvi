@@ -15,8 +15,14 @@
 
 .logo .cms-btn {
     background: transparent;
+    font-family: 'Roboto', sans-serif;
     border: none;
     font-size: 1.3rem;
     cursor: pointer;
     margin-left: 15px;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
 }
