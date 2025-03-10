@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./styles/navigation.css">
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/table.css">
+    <link rel="stylesheet" href="./styles/modal.css">
     <title>Students</title>
 </head>
 <body>
@@ -147,10 +148,57 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="pagination">
+                    <button id="prev-page" aria-label="Previous page">&laquo; Prev</button>
+                    <button class="page-number active" data-page="1">1</button>
+                    <button class="page-number" data-page="2">2</button>
+                    <button class="page-number" data-page="3">3</button>
+                    <button id="next-page" aria-label="Next page">Next &raquo;</button>
+                </div>
             </div>
         </section>
     </main>
 
+    <div class="modal-content" id="modal">
+        <div class="modal-header">
+            <h3>Add student</h3>
+            <button class="close-btn" aria-label="Close modal" id="close-btn">X</button>
+        </div>
+        <div class="modal-body">
+            <form id="student-form">
+                <div class="form-group">
+                    <label for="group">Group</label>
+                    <select name="group" id="group">
+                        <option value="PZ-21">PZ-21</option>
+                        <option value="PZ-22">PZ-22</option>
+                        <option value="PZ-23">PZ-23</option>
+                        <option value="PZ-24">PZ-24</option>
+                        <option value="PZ-25">PZ-25</option>
+                        <option value="PZ-26">PZ-26</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Birthday</label>
+                    <input type="date" id="birthday" name="birthday" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-btn" id="submit-btn">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 <script src="scripts/nottification.js"></script>
 <script src="scripts/table.js"></script>
