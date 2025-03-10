@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="./styles/notifications.css">
     <link rel="stylesheet" href="./styles/navigation.css">
     <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/table.css">
     <title>Students</title>
 </head>
 <body>
-
     <a class="skipmain" href="#header" target="_self"><h1>Student manager</h1></a>
 
     <header id="header">
@@ -92,6 +92,62 @@
 
         <section class="main-content">
             <h2>Students</h2>
+            <div class="table-controls">
+                <button class="add-btn" aria-label="Add student" id="add-btn">Add</button>
+            </div>
+            <div class="table-container">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" aria-label="Select all students"></th>
+                            <th>Group</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Status</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
+                            <td>KN-21</td>
+                            <td>John Smith</td>
+                            <td>M</td>
+                            <td>11.05.2004</td>
+                            <td><span class="status-indicator online"></span> Online</td>
+                            <td>
+                                <button class="edit-btn" aria-label="Edit student">Edit</button>
+                                <button class="delete-btn" aria-label="Delete student">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
+                            <td>KN-21</td>
+                            <td>John Smith</td>
+                            <td>M</td>
+                            <td>11.05.2004</td>
+                            <td><span class="status-indicator offline"></span> Offline</td>
+                            <td>
+                                <button class="edit-btn" aria-label="Edit student">Edit</button>
+                                <button class="delete-btn" aria-label="Delete student">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
+                            <td>KN-21</td>
+                            <td>John Smith</td>
+                            <td>M</td>
+                            <td>11.05.2004</td>
+                            <td><span class="status-indicator online"></span> Online</td>
+                            <td>
+                                <button class="edit-btn" aria-label="Edit student">Edit</button>
+                                <button class="delete-btn" aria-label="Delete student">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 

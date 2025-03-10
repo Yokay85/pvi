@@ -13,7 +13,13 @@
 
 .main-content h2{
     font-family: 'Roboto', sans-serif;
-    font-size: 1.2rem;
-    margin-left: 100px;
-    margin-bottom: 35px;
+    font-size: 1.5rem;
+    margin-top: 27px;
+    margin-bottom: 27px;
+    margin-left: 40px;
+}
+    /* padding: 30px; */
+
+a:hover {
+    text-shadow: 0.5px 0px 0px #000;
 }
