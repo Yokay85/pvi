@@ -78,7 +78,13 @@
 
 .table-controls {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     margin-right: 30px;
-    
+}
+
+.table-controls h2{
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    margin-top: 27px;
+    margin-left: 40px;
 }
