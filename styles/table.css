@@ -4,6 +4,8 @@
     margin-right: 30px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .students-table {

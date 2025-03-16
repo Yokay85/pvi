@@ -24,7 +24,6 @@ function openModal() {
 function closeModal() {
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
-    // Reset form fields
     form.reset();
 }
 
@@ -114,6 +113,5 @@ function initializeExistingRows() {
     });
 }
 
-// Call this function when the page loads
 window.addEventListener('DOMContentLoaded', initializeExistingRows);
 
