@@ -1,5 +1,6 @@
 const table = document.getElementById("students");
 const modal = document.getElementById('modal');
+const confirmModal = document.getElementById('confirmModal');
 const modalOverlay = document.getElementById('modal-overlay');
 const addBtn = document.getElementById('add-btn');
 const closeBtn = document.getElementById('close-btn');
@@ -8,8 +9,14 @@ const saveBtn = document.getElementById('submit-btn');
 const form = document.getElementById('student-form');
 const selectAllCheckbox = document.getElementById('selectAll');
 
+const confirmMessage = document.getElementById('confirm-message');
+const confirmYesBtn = document.getElementById('confirm-yes-btn');
+const confirmNoBtn = document.getElementById('confirm-no-btn');
+const closeConfirmBtn = document.getElementById('close-confirm-btn');
+
 let students = [];
 let nextId = 1;
+let pendingDeleteItems = [];
 
 addBtn.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
@@ -17,6 +24,10 @@ cancelBtn.addEventListener('click', closeModal);
 form.addEventListener('submit', addStudent);
 table.addEventListener('click', handleTableActions);
 selectAllCheckbox.addEventListener('change', toggleSelectAll);
+
+confirmYesBtn.addEventListener('click', confirmDeletion);
+confirmNoBtn.addEventListener('click', closeConfirmModal);
+closeConfirmBtn.addEventListener('click', closeConfirmModal);
 
 function toggleSelectAll() {
     const checkboxes = document.querySelectorAll('.student-select');
@@ -93,21 +104,21 @@ function deleteStudent(deleteBtn) {
     const selectedCheckboxes = document.querySelectorAll('.student-select:checked');
     
     if (selectedCheckboxes.length > 0) {
-        selectedCheckboxes.forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            const studentId = parseInt(row.dataset.studentId);
-            
-            const studentIndex = students.findIndex(student => student.id === studentId);
-            if (studentIndex !== -1) {
-                students.splice(studentIndex, 1);
-            }
-            
-            row.remove();
-        });
-        
-        selectAllCheckbox.checked = false;
+        pendingDeleteItems = Array.from(selectedCheckboxes).map(checkbox => checkbox.closest('tr'));
+        confirmMessage.textContent = `Are you sure you want to delete all ${selectedCheckboxes.length} selected students?`;
+        openConfirmModal();
     } else {
         const row = deleteBtn.closest('tr');
+        pendingDeleteItems = [row];
+        
+        const studentName = row.cells[2].textContent;
+        confirmMessage.textContent = `Are you sure you want to delete ${studentName}?`;
+        openConfirmModal();
+    }
+}
+
+function confirmDeletion() {
+    pendingDeleteItems.forEach(row => {
         const studentId = parseInt(row.dataset.studentId);
         
         const studentIndex = students.findIndex(student => student.id === studentId);
@@ -116,7 +127,25 @@ function deleteStudent(deleteBtn) {
         }
         
         row.remove();
+    });
+    
+    if (pendingDeleteItems.length > 1) {
+        selectAllCheckbox.checked = false;
     }
+    
+    pendingDeleteItems = [];
+    closeConfirmModal();
+}
+
+function openConfirmModal() {
+    confirmModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmModal() {
+    confirmModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    pendingDeleteItems = [];
 }
 
 function initializeExistingRows() {

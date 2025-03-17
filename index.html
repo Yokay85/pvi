@@ -109,7 +109,7 @@
                 <table class="students-table">
                     <thead>
                         <tr>
-                            <th  scope="col" aria-label="Select students">
+                            <th scope="col" aria-label="Select students">
                                 <input type="checkbox" id="selectAll" aria-label="Select all students">
                             </th>
                             <th>Group</th>
@@ -213,6 +213,20 @@
                     <button type="button" class="cancel-btn" id="cancel-btn">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal-content" id="confirmModal" style="display: none;">
+        <div class="modal-header">
+            <h3>Confirm Deletion</h3>
+            <button class="close-btn" aria-label="Close confirmation modal" id="close-confirm-btn">X</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirm-message">Are you sure you want to delete this student?</p>
+            <div class="form-buttons">
+                <button type="button" class="submit-btn" id="confirm-yes-btn">Yes</button>
+                <button type="button" class="cancel-btn" id="confirm-no-btn">No</button>
+            </div>
         </div>
     </div>
 

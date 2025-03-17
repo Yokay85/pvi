@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
 bell.addEventListener('click', () => {
     window.open('messages.html', '_blank');
     notificationDot.style.display = 'none';
-    bell.classList.remove('shake')
+    bell.classList.remove('shake');
 });
 
 bell.addEventListener('mouseover', () => {
@@ -23,5 +23,5 @@ bell.addEventListener('mouseover', () => {
 });
 
 bell.addEventListener('mouseout', () => {
-    notificationPopup.style.display = 'none'}
+    notificationPopup.style.display = 'none';}
 );

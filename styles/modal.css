@@ -59,6 +59,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 20px;
 }
 
 .submit-btn, 
@@ -78,4 +79,14 @@
     background-color: #f44336;
     color: white;
     border: none;
+}
+
+#confirmModal {
+    z-index: 1001;
+}
+
+#confirm-message {
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-align: center;
 }
