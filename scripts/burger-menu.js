@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function()
                 toggleMenu();
                 burgerMenu.classList.remove('active');
             }
-    })  
+    });  
     });
     
     window.addEventListener('resize', function() {

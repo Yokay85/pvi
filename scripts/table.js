@@ -6,6 +6,7 @@ const closeBtn = document.getElementById('close-btn');
 const cancelBtn = document.getElementById('cancel-btn');
 const saveBtn = document.getElementById('submit-btn');
 const form = document.getElementById('student-form');
+const selectAllCheckbox = document.getElementById('selectAll');
 
 let students = [];
 let nextId = 1;
@@ -15,6 +16,14 @@ closeBtn.addEventListener('click', closeModal);
 cancelBtn.addEventListener('click', closeModal);
 form.addEventListener('submit', addStudent);
 table.addEventListener('click', handleTableActions);
+selectAllCheckbox.addEventListener('change', toggleSelectAll);
+
+function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('.student-select');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+}
 
 function openModal() {
     modal.style.display = 'block';
@@ -43,6 +52,7 @@ function addStudent(e) {
         id: studentId,
         group: document.getElementById('group').value,
         name: document.getElementById('name').value,
+        surname: document.getElementById('surname').value,
         gender: document.getElementById('gender').value,
         birthday: formatDate(document.getElementById('birthday').value)
     };
@@ -53,7 +63,7 @@ function addStudent(e) {
     tr.innerHTML = `
                     <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
                     <td>${formData.group}</td>
-                    <td>${formData.name}</td>
+                    <td>${formData.surname} ${formData.name}</td>
                     <td>${formData.gender}</td>
                     <td>${formData.birthday}</td>
                     <td><span class="status-indicator online"></span> Online</td>
@@ -80,15 +90,33 @@ function handleTableActions(e) {
 }
 
 function deleteStudent(deleteBtn) {
-    const row = deleteBtn.closest('tr');
-    const studentId = parseInt(row.dataset.studentId);
+    const selectedCheckboxes = document.querySelectorAll('.student-select:checked');
     
-    const studentIndex = students.findIndex(student => student.id === studentId);
-    if (studentIndex !== -1) {
-        students.splice(studentIndex, 1);
+    if (selectedCheckboxes.length > 0) {
+        selectedCheckboxes.forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const studentId = parseInt(row.dataset.studentId);
+            
+            const studentIndex = students.findIndex(student => student.id === studentId);
+            if (studentIndex !== -1) {
+                students.splice(studentIndex, 1);
+            }
+            
+            row.remove();
+        });
+        
+        selectAllCheckbox.checked = false;
+    } else {
+        const row = deleteBtn.closest('tr');
+        const studentId = parseInt(row.dataset.studentId);
+        
+        const studentIndex = students.findIndex(student => student.id === studentId);
+        if (studentIndex !== -1) {
+            students.splice(studentIndex, 1);
+        }
+        
+        row.remove();
     }
-    
-    row.remove();
 }
 
 function initializeExistingRows() {
@@ -99,10 +127,17 @@ function initializeExistingRows() {
             row.dataset.studentId = studentId;
             
             const cells = row.cells;
+            
+            const fullName = cells[2].textContent.trim();
+            const nameParts = fullName.split(' ');
+            const surname = nameParts[0] || '';
+            const name = nameParts.slice(1).join(' ') || '';
+            
             const student = {
                 id: studentId,
                 group: cells[1].textContent,
-                name: cells[2].textContent,
+                surname: surname,
+                name: name,
                 gender: cells[3].textContent,
                 birthday: cells[4].textContent,
                 status: cells[5].textContent.includes('Online') ? 'online' : 'offline'
