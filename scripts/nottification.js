@@ -19,9 +19,18 @@ bell.addEventListener('click', () => {
 });
 
 bell.addEventListener('mouseover', () => {
+
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        return;
+    }
     notificationPopup.style.display = 'block';
 });
 
 bell.addEventListener('mouseout', () => {
     notificationPopup.style.display = 'none';}
 );
+
+bell.addEventListener('touchstart', () => {
+    // Для сумісності з різними пристроями
+}, { passive: true });
