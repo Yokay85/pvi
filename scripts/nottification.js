@@ -30,7 +30,3 @@ bell.addEventListener('mouseover', () => {
 bell.addEventListener('mouseout', () => {
     notificationPopup.style.display = 'none';}
 );
-
-bell.addEventListener('touchstart', () => {
-    // Для сумісності з різними пристроями
-}, { passive: true });
