@@ -1,11 +1,9 @@
 const table = document.getElementById("students");
 const modal = document.getElementById('modal');
 const confirmModal = document.getElementById('confirmModal');
-const modalOverlay = document.getElementById('modal-overlay');
 const addBtn = document.getElementById('add-btn');
 const closeBtn = document.getElementById('close-btn');
 const cancelBtn = document.getElementById('cancel-btn');
-const saveBtn = document.getElementById('submit-btn');
 const form = document.getElementById('student-form');
 const selectAllCheckbox = document.getElementById('selectAll');
 
@@ -13,10 +11,13 @@ const confirmMessage = document.getElementById('confirm-message');
 const confirmYesBtn = document.getElementById('confirm-yes-btn');
 const confirmNoBtn = document.getElementById('confirm-no-btn');
 const closeConfirmBtn = document.getElementById('close-confirm-btn');
+const modalOverlay = document.getElementById('modal-overlay');
 
 let students = [];
 let nextId = 1;
 let pendingDeleteItems = [];
+let isEditingMode = false;  
+let editingStudentId = null;
 
 addBtn.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
@@ -29,6 +30,11 @@ confirmYesBtn.addEventListener('click', confirmDeletion);
 confirmNoBtn.addEventListener('click', closeConfirmModal);
 closeConfirmBtn.addEventListener('click', closeConfirmModal);
 
+modalOverlay.addEventListener('click', function() {
+    closeModal();
+    closeConfirmModal();
+});
+
 function toggleSelectAll() {
     const checkboxes = document.querySelectorAll('.student-select');
     checkboxes.forEach(checkbox => {
@@ -38,13 +44,28 @@ function toggleSelectAll() {
 
 function openModal() {
     modal.style.display = 'block';
+    modal.classList.add('active');
+
+    modalOverlay.classList.add('active');
+    modalOverlay.style.display = 'block';
+
     document.body.style.overflow = 'hidden';
 }   
 
 function closeModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    form.reset();
+    modal.classList.remove('active');
+    modalOverlay.classList.remove('active');
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        form.reset();
+        
+        isEditingMode = false;
+        editingStudentId = null;
+        document.getElementById('submit-btn').textContent = 'Save';
+    }, 300);
 }
 
 function formatDate(dateString) {
@@ -57,38 +78,63 @@ function formatDate(dateString) {
 
 function addStudent(e) {
     e.preventDefault();
-    const studentId = nextId++;
     
     const formData = {
-        id: studentId,
         group: document.getElementById('group').value,
         name: document.getElementById('name').value,
         surname: document.getElementById('surname').value,
         gender: document.getElementById('gender').value,
         birthday: formatDate(document.getElementById('birthday').value)
     };
-
-    const tr = document.createElement("tr");
-    tr.dataset.studentId = studentId;
-
-    tr.innerHTML = `
-                    <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
-                    <td>${formData.group}</td>
-                    <td>${formData.surname} ${formData.name}</td>
-                    <td>${formData.gender}</td>
-                    <td>${formData.birthday}</td>
-                    <td><span class="status-indicator online"></span> Online</td>
-                    <td>
-                        <button class="edit-btn" aria-label="Edit student">Edit</button>
-                        <button class="delete-btn" aria-label="Delete student">Delete</button>
-                    </td>
-                `;
-
-    table.appendChild(tr);
     
-    students.push(formData);
+    if (isEditingMode && editingStudentId !== null) {
+        updateStudent(editingStudentId, formData);
+        isEditingMode = false;
+        editingStudentId = null;
+        document.getElementById('submit-btn').textContent = 'Save';
+    } else {
+        const studentId = nextId++;
+        formData.id = studentId;
+        
+        const tr = document.createElement("tr");
+        tr.dataset.studentId = studentId;
+
+        tr.innerHTML = `
+                        <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
+                        <td>${formData.group}</td>
+                        <td>${formData.surname} ${formData.name}</td>
+                        <td>${formData.gender}</td>
+                        <td>${formData.birthday}</td>
+                        <td><span class="status-indicator online"></span> Online</td>
+                        <td>
+                            <button class="edit-btn" aria-label="Edit student">Edit</button>
+                            <button class="delete-btn" aria-label="Delete student">Delete</button>
+                        </td>
+                    `;
+
+        table.appendChild(tr);
+        students.push(formData);
+    }
     
     closeModal();
+}
+
+function updateStudent(studentId, formData) {
+    const index = students.findIndex(student => student.id === studentId);
+    if (index === -1) return;
+    
+    formData.id = studentId;
+    formData.status = students[index].status || 'online';
+    
+    students[index] = formData;
+    
+    const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+    if (row) {
+        row.cells[1].textContent = formData.group;
+        row.cells[2].textContent = `${formData.surname} ${formData.name}`;
+        row.cells[3].textContent = formData.gender;
+        row.cells[4].textContent = formData.birthday;
+    }
 }
 
 function handleTableActions(e) {
@@ -96,7 +142,7 @@ function handleTableActions(e) {
     if (target.classList.contains('delete-btn')) {
         deleteStudent(target);
     } else if (target.classList.contains('edit-btn')) {
-        
+        editStudent(target);
     }
 }
 
@@ -140,12 +186,42 @@ function confirmDeletion() {
 function openConfirmModal() {
     confirmModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    modalOverlay.style.display = 'block';
 }
 
 function closeConfirmModal() {
     confirmModal.style.display = 'none';
     document.body.style.overflow = 'auto';
+    modalOverlay.style.display = 'none';
     pendingDeleteItems = [];
+}
+
+function editStudent(editBtn){
+    const row = editBtn.closest('tr');
+    const studentId = parseInt(row.dataset.studentId);
+
+    const student = students.find(student => student.id === studentId);
+
+    if (!student) 
+        return;
+
+    document.getElementById('group').value = student.group;
+    document.getElementById('name').value = student.name;
+    document.getElementById('surname').value = student.surname;
+    document.getElementById('gender').value = student.gender;
+
+    const dateParts = student.birthday.split('.');
+    if (dateParts.length === 3) {
+        const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+        document.getElementById('birthday').value = formattedDate;
+    }
+
+    isEditingMode = true;
+    editingStudentId = studentId;
+
+    openModal();
+
+    document.getElementById('submit-btn').textContent = 'Update';
 }
 
 function initializeExistingRows() {
