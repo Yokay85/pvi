@@ -1,3 +1,4 @@
+// DOM elements initialization
 const table = document.getElementById("students");
 const modal = document.getElementById('modal');
 const confirmModal = document.getElementById('confirmModal');
@@ -13,16 +14,17 @@ const confirmNoBtn = document.getElementById('confirm-no-btn');
 const closeConfirmBtn = document.getElementById('close-confirm-btn');
 const modalOverlay = document.getElementById('modal-overlay');
 
+// State variables
 let students = [];
 let nextId = 1;
 let pendingDeleteItems = [];
 let isEditingMode = false;  
 let editingStudentId = null;
 
+// Event listeners setup
 addBtn.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
 cancelBtn.addEventListener('click', closeModal);
-form.addEventListener('submit', addStudent);
 table.addEventListener('click', handleTableActions);
 selectAllCheckbox.addEventListener('change', toggleSelectAll);
 
@@ -35,6 +37,7 @@ modalOverlay.addEventListener('click', function() {
     closeConfirmModal();
 });
 
+// Select/deselect all rows
 function toggleSelectAll() {
     const checkboxes = document.querySelectorAll('.student-select');
     checkboxes.forEach(checkbox => {
@@ -42,6 +45,7 @@ function toggleSelectAll() {
     });
 }
 
+// Show add/edit student modal
 function openModal() {
     modal.style.display = 'block';
     modal.classList.add('active');
@@ -52,6 +56,7 @@ function openModal() {
     document.body.style.overflow = 'hidden';
 }   
 
+// Hide student modal
 function closeModal() {
     modal.classList.remove('active');
     modalOverlay.classList.remove('active');
@@ -68,6 +73,7 @@ function closeModal() {
     }, 300);
 }
 
+// Format date to DD.MM.YYYY format
 function formatDate(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -76,8 +82,15 @@ function formatDate(dateString) {
     return `${day}.${month}.${year}`;
 }
 
-function addStudent(e) {
+// Add or update student data
+window.addStudent = function(e) {
     e.preventDefault();
+    
+    const isHtmlValidation = document.getElementById('validation-html').checked;
+    
+    if (isHtmlValidation && !e.target.checkValidity()) {
+        return;
+    }
     
     const formData = {
         group: document.getElementById('group').value,
@@ -117,8 +130,9 @@ function addStudent(e) {
     }
     
     closeModal();
-}
+};
 
+// Update existing student data
 function updateStudent(studentId, formData) {
     const index = students.findIndex(student => student.id === studentId);
     if (index === -1) return;
@@ -137,6 +151,7 @@ function updateStudent(studentId, formData) {
     }
 }
 
+// Handle table action buttons (edit/delete)
 function handleTableActions(e) {
     const target = e.target;
     if (target.classList.contains('delete-btn')) {
@@ -146,6 +161,7 @@ function handleTableActions(e) {
     }
 }
 
+// Process student deletion
 function deleteStudent(deleteBtn) {
     const selectedCheckboxes = document.querySelectorAll('.student-select:checked');
     
@@ -163,6 +179,7 @@ function deleteStudent(deleteBtn) {
     }
 }
 
+// Confirm and execute deletion of students
 function confirmDeletion() {
     pendingDeleteItems.forEach(row => {
         const studentId = parseInt(row.dataset.studentId);
@@ -183,6 +200,7 @@ function confirmDeletion() {
     closeConfirmModal();
 }
 
+// Show confirmation modal
 function openConfirmModal() {
     confirmModal.style.display = 'block';
     confirmModal.classList.add('active');
@@ -193,6 +211,7 @@ function openConfirmModal() {
     document.body.style.overflow = 'hidden';
 }
 
+// Hide confirmation modal
 function closeConfirmModal() {
     confirmModal.classList.remove('active');
     modalOverlay.classList.remove('active');
@@ -207,6 +226,7 @@ function closeConfirmModal() {
     }, 300);
 }
 
+// Edit existing student data
 function editStudent(editBtn){
     const row = editBtn.closest('tr');
     const studentId = parseInt(row.dataset.studentId);
@@ -235,6 +255,7 @@ function editStudent(editBtn){
     document.getElementById('submit-btn').textContent = 'Update';
 }
 
+// Initialize existing table rows on page load
 function initializeExistingRows() {
     const existingRows = table.querySelectorAll('tbody tr');
     existingRows.forEach(row => {

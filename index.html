@@ -176,10 +176,21 @@
             <button class="close-btn" aria-label="Close modal" id="close-btn">X</button>
         </div>
         <div class="modal-body">
-            <form id="student-form">
+            <div class="validation-toggle">
+                <label>Метод валідації:</label>
+                <div>
+                    <input type="radio" id="validation-html" name="validation-method" value="html" checked>
+                    <label for="validation-html">HTML</label>
+                    
+                    <input type="radio" id="validation-js" name="validation-method" value="js">
+                    <label for="validation-js">JavaScript</label>
+                </div>
+            </div>
+            <form id="student-form" novalidate>
                 <div class="form-group">
                     <label for="group">Group</label>
-                    <select name="group" id="group">
+                    <select name="group" id="group" required>
+                        <option value="">Select group</option>
                         <option value="PZ-21">PZ-21</option>
                         <option value="PZ-22">PZ-22</option>
                         <option value="PZ-23">PZ-23</option>
@@ -187,14 +198,17 @@
                         <option value="PZ-25">PZ-25</option>
                         <option value="PZ-26">PZ-26</option>
                     </select>
+                    <div class="error-message" id="group-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" required pattern="[A-Za-zА-Яа-яЇїІіЄєҐґ]{2,50}">
+                    <div class="error-message" id="name-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="surname">Surname</label>
-                    <input type="text" id="surname" name="surname" required>
+                    <input type="text" id="surname" name="surname" required pattern="[A-Za-zА-Яа-яЇїІіЄєҐґ]{2,50}">
+                    <div class="error-message" id="surname-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="gender">Gender</label>
@@ -203,10 +217,12 @@
                         <option value="M">Male</option>
                         <option value="F">Female</option>
                     </select>
+                    <div class="error-message" id="gender-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="birthday">Birthday</label>
                     <input type="date" id="birthday" name="birthday" required>
+                    <div class="error-message" id="birthday-error"></div>
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="submit-btn" id="submit-btn">Save</button>
@@ -235,5 +251,6 @@
 <script src="scripts/nottification.js"></script>
 <script src="scripts/table.js"></script>
 <script src="scripts/burger-menu.js"></script>
+<script src="scripts/validations.js"></script>
 </body>
 </html>
