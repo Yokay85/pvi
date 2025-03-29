@@ -1,5 +1,6 @@
 const CACHE_NAME = 'pvi-cache-v1';
 const urlsToCache = [
+    './',
     './index.html',
     './dashboard.html',
     './tasks.html',
