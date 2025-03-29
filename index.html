@@ -6,6 +6,10 @@
     <meta name="description" content="Author: Hideo Kojima,
     Illustrator: Hideo Kojima, Category: Hideo Kojima, Price: Priceless,
     Length: Genious">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PVI Project">
     <link rel="stylesheet" href="./styles/skipmain.css">
     <link rel="stylesheet" href="./styles/header.css">
     <link rel="stylesheet" href="./styles/profile.css">
@@ -14,7 +18,22 @@
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/table.css">
     <link rel="stylesheet" href="./styles/modal.css">
+    <link rel="manifest" href="manifest.json">
     <title>Students</title>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </head>
 <body>
     <a class="skipmain" href="#header" target="_self"><h1>Student manager</h1></a>
