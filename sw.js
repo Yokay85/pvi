@@ -13,7 +13,6 @@ const urlsToCache = [
     './styles/skipmain.css',
     './scripts/validations.js',
     './scripts/burger-menu.js',
-    './scripts/notification.js',
     './scripts/table.js',
 ];
 

@@ -2,7 +2,7 @@
     "name": "PVI Project",
     "short_name": "PVI",
     "description": "PVI Project Progressive Web App",
-    "start_url": "/index.html",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4285f4",

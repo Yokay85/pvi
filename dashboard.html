@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="PVI Project">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="/images/icon-192x192.png">
     <link rel="stylesheet" href="./styles/skipmain.css">
     <link rel="stylesheet" href="./styles/header.css">
@@ -23,7 +24,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then(function(registration) {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
                     })
@@ -33,7 +34,7 @@
             });
         }
     </script>
-    
+
 </head>
 <body>
     <a class="skipmain" href="#header" target="_self"><h1>Student manager</h1></a>
