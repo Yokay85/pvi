@@ -105,6 +105,8 @@ window.addStudent = function(e) {
         isEditingMode = false;
         editingStudentId = null;
         document.getElementById('submit-btn').textContent = 'Save';
+
+        console.log('Updated student:', JSON.stringify(formData, null, 2));
     } else {
         const studentId = nextId++;
         formData.id = studentId;
@@ -127,8 +129,12 @@ window.addStudent = function(e) {
 
         table.appendChild(tr);
         students.push(formData);
+
+        console.log('Added student:', JSON.stringify(formData, null, 2));
     }
     
+    // console.log('Current students:', JSON.stringify(students, null, 2));
+
     closeModal();
 };
 
