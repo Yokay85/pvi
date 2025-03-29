@@ -185,15 +185,26 @@ function confirmDeletion() {
 
 function openConfirmModal() {
     confirmModal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    confirmModal.classList.add('active');
+    
     modalOverlay.style.display = 'block';
+    modalOverlay.classList.add('active');
+    
+    document.body.style.overflow = 'hidden';
 }
 
 function closeConfirmModal() {
-    confirmModal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    modalOverlay.style.display = 'none';
-    pendingDeleteItems = [];
+    confirmModal.classList.remove('active');
+    modalOverlay.classList.remove('active');
+    
+    setTimeout(() => {
+        confirmModal.style.display = 'none';
+        if (!modal.classList.contains('active')) {
+            document.body.style.overflow = 'auto';
+            modalOverlay.style.display = 'none';
+        }
+        pendingDeleteItems = [];
+    }, 300);
 }
 
 function editStudent(editBtn){
