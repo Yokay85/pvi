@@ -4,12 +4,12 @@ const validations = {
         message: "Group should be in format XX-YY (e.g., PZ-21)"
     },
     name: {
-        regex: /^[A-Za-zА-Яа-яЇїІіЄєҐґ]{2,50}$/,
-        message: "Name should contain 2-50 letters only"
+        regex: /^[A-Za-zА-Яа-яЇїІіЄєҐґ\s\-]{2,50}$/,
+        message: "Name should contain 2-50 characters (letters, spaces, hyphens)"
     },
     surname: {
-        regex: /^[A-Za-zА-Яа-яЇїІіЄєҐґ]{2,50}$/,
-        message: "Surname should contain 2-50 letters only"
+        regex: /^[A-Za-zА-Яа-яЇїІіЄєҐґ\s\-]{2,50}$/,
+        message: "Surname should contain 2-50 characters (letters, spaces, hyphens)"
     },
     gender: {
         message: "Please select a gender"
