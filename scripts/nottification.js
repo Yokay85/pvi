@@ -28,5 +28,6 @@ bell.addEventListener('mouseover', () => {
 });
 
 bell.addEventListener('mouseout', () => {
-    notificationPopup.style.display = 'none';}
+    notificationPopup.style.display = 'none';
+}
 );

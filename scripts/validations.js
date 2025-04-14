@@ -25,21 +25,21 @@ const validations = {
 function validateBirthday(date) {
     const today = new Date();
     const birthDate = new Date(date);
-    
+
     if (isNaN(birthDate.getTime())) {
         return false;
     }
-    
+
     if (birthDate > today) {
         return false;
     }
-    
+
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
-    
+
     return age >= 16 && age <= 100;
 }
 
@@ -53,14 +53,14 @@ function validateField(field, skipVisuals = false) {
     const errorElement = document.getElementById(`${fieldName}-error`);
     const validation = validations[fieldName];
     let isValid = false;
-    
+
     const shouldShowVisuals = touchedFields.has(fieldName);
-    
+
     if (!skipVisuals) {
         field.parentElement.classList.remove('error', 'valid');
         if (errorElement) errorElement.textContent = '';
     }
-    
+
     if (fieldName === 'birthday') {
         isValid = field.value && validateBirthday(field.value);
     } else if (fieldName === 'gender' || fieldName === 'group') {
@@ -70,7 +70,7 @@ function validateField(field, skipVisuals = false) {
     } else {
         isValid = field.value.trim() !== '';
     }
-    
+
     if (!skipVisuals && shouldShowVisuals) {
         if (!isValid) {
             field.parentElement.classList.add('error');
@@ -79,7 +79,7 @@ function validateField(field, skipVisuals = false) {
             field.parentElement.classList.add('valid');
         }
     }
-    
+
     return isValid;
 }
 
@@ -92,33 +92,33 @@ function initializeValidation() {
     const jsRadio = document.getElementById('validation-js');
     const formFields = form.querySelectorAll('input:not([type="radio"]), select');
     const birthdayField = document.getElementById('birthday');
-    
+
     /**
      * Sets up the min and max date constraints for birthday field
      */
     function setupDateValidation() {
         const today = new Date();
-        
+
         const maxDate = new Date(today);
         maxDate.setFullYear(today.getFullYear() - 16);
-        
+
         const minDate = new Date(today);
         minDate.setFullYear(today.getFullYear() - 100);
-        
+
         birthdayField.max = maxDate.toISOString().split('T')[0];
         birthdayField.min = minDate.toISOString().split('T')[0];
     }
-    
+
     setupDateValidation();
-    
+
     /**
      * Toggles between HTML5 and JS validation methods
      */
     function toggleValidationMethod() {
         const useHTML = htmlRadio.checked;
-        
+
         form.setAttribute('novalidate', !useHTML);
-        
+
         touchedFields.clear();
         formFields.forEach(field => {
             field.parentElement.classList.remove('error', 'valid');
@@ -126,23 +126,23 @@ function initializeValidation() {
             if (errorElement) errorElement.textContent = '';
         });
     }
-    
+
     htmlRadio.addEventListener('change', toggleValidationMethod);
     jsRadio.addEventListener('change', toggleValidationMethod);
-    
-    form.addEventListener('submit', function(e) {
+
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         if (jsRadio.checked) {
             formFields.forEach(field => touchedFields.add(field.id));
-            
+
             let isFormValid = true;
             formFields.forEach(field => {
                 if (!validateField(field)) {
                     isFormValid = false;
                 }
             });
-            
+
             if (isFormValid) {
                 window.addStudent(e);
             }
@@ -154,23 +154,23 @@ function initializeValidation() {
             }
         }
     });
-    
+
     formFields.forEach(field => {
-        field.addEventListener('input', function() {
+        field.addEventListener('input', function () {
             touchedFields.add(field.id);
             if (jsRadio.checked) {
                 validateField(field);
             }
         });
-        
-        field.addEventListener('blur', function() {
+
+        field.addEventListener('blur', function () {
             touchedFields.add(field.id);
             if (jsRadio.checked) {
                 validateField(field);
             }
         });
     });
-    
+
     toggleValidationMethod();
 }
 

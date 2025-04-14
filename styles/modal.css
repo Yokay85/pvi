@@ -67,7 +67,8 @@
 .form-group input:invalid,
 .form-group select:invalid {
     /* Видаляємо ці стилі, щоб поля не були червоними відразу */
-    border: 1px solid #ddd; /* Стандартний стиль */
+    border: 1px solid #ddd;
+    /* Стандартний стиль */
     background-color: white;
 }
 
@@ -121,7 +122,7 @@
     margin-top: 20px;
 }
 
-.submit-btn, 
+.submit-btn,
 .cancel-btn {
     padding: 8px 16px;
     border-radius: 4px;

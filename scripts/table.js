@@ -18,7 +18,7 @@ const modalOverlay = document.getElementById('modal-overlay');
 let students = [];
 let nextId = 1;
 let pendingDeleteItems = [];
-let isEditingMode = false;  
+let isEditingMode = false;
 let editingStudentId = null;
 
 // Event listeners setup
@@ -32,7 +32,7 @@ confirmYesBtn.addEventListener('click', confirmDeletion);
 confirmNoBtn.addEventListener('click', closeConfirmModal);
 closeConfirmBtn.addEventListener('click', closeConfirmModal);
 
-modalOverlay.addEventListener('click', function() {
+modalOverlay.addEventListener('click', function () {
     closeModal();
     closeConfirmModal();
 });
@@ -54,19 +54,19 @@ function openModal() {
     modalOverlay.style.display = 'block';
 
     document.body.style.overflow = 'hidden';
-}   
+}
 
 // Hide student modal
 function closeModal() {
     modal.classList.remove('active');
     modalOverlay.classList.remove('active');
-    
+
     setTimeout(() => {
         modal.style.display = 'none';
         modalOverlay.style.display = 'none';
         document.body.style.overflow = 'auto';
         form.reset();
-        
+
         isEditingMode = false;
         editingStudentId = null;
         document.getElementById('submit-btn').textContent = 'Save';
@@ -83,15 +83,15 @@ function formatDate(dateString) {
 }
 
 // Add or update student data
-window.addStudent = function(e) {
+window.addStudent = function (e) {
     e.preventDefault();
-    
+
     const isHtmlValidation = document.getElementById('validation-html').checked;
-    
+
     if (isHtmlValidation && !e.target.checkValidity()) {
         return;
     }
-    
+
     const formData = {
         group: document.getElementById('group').value,
         name: document.getElementById('name').value,
@@ -99,7 +99,7 @@ window.addStudent = function(e) {
         gender: document.getElementById('gender').value,
         birthday: formatDate(document.getElementById('birthday').value)
     };
-    
+
     if (isEditingMode && editingStudentId !== null) {
         updateStudent(editingStudentId, formData);
         isEditingMode = false;
@@ -110,7 +110,7 @@ window.addStudent = function(e) {
     } else {
         const studentId = nextId++;
         formData.id = studentId;
-        
+
         const tr = document.createElement("tr");
         tr.dataset.studentId = studentId;
 
@@ -132,7 +132,7 @@ window.addStudent = function(e) {
 
         console.log('Added student:', JSON.stringify(formData, null, 2));
     }
-    
+
     // console.log('Current students:', JSON.stringify(students, null, 2));
 
     closeModal();
@@ -142,12 +142,12 @@ window.addStudent = function(e) {
 function updateStudent(studentId, formData) {
     const index = students.findIndex(student => student.id === studentId);
     if (index === -1) return;
-    
+
     formData.id = studentId;
     formData.status = students[index].status || 'online';
-    
+
     students[index] = formData;
-    
+
     const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
     if (row) {
         row.cells[1].textContent = formData.group;
@@ -170,7 +170,7 @@ function handleTableActions(e) {
 // Process student deletion
 function deleteStudent(deleteBtn) {
     const selectedCheckboxes = document.querySelectorAll('.student-select:checked');
-    
+
     if (selectedCheckboxes.length > 0) {
         pendingDeleteItems = Array.from(selectedCheckboxes).map(checkbox => checkbox.closest('tr'));
         confirmMessage.textContent = `Are you sure you want to delete all ${selectedCheckboxes.length} selected students?`;
@@ -178,7 +178,7 @@ function deleteStudent(deleteBtn) {
     } else {
         const row = deleteBtn.closest('tr');
         pendingDeleteItems = [row];
-        
+
         const studentName = row.cells[2].textContent;
         confirmMessage.textContent = `Are you sure you want to delete ${studentName}?`;
         openConfirmModal();
@@ -189,19 +189,19 @@ function deleteStudent(deleteBtn) {
 function confirmDeletion() {
     pendingDeleteItems.forEach(row => {
         const studentId = parseInt(row.dataset.studentId);
-        
+
         const studentIndex = students.findIndex(student => student.id === studentId);
         if (studentIndex !== -1) {
             students.splice(studentIndex, 1);
         }
-        
+
         row.remove();
     });
-    
+
     if (pendingDeleteItems.length > 1) {
         selectAllCheckbox.checked = false;
     }
-    
+
     pendingDeleteItems = [];
     closeConfirmModal();
 }
@@ -210,10 +210,10 @@ function confirmDeletion() {
 function openConfirmModal() {
     confirmModal.style.display = 'block';
     confirmModal.classList.add('active');
-    
+
     modalOverlay.style.display = 'block';
     modalOverlay.classList.add('active');
-    
+
     document.body.style.overflow = 'hidden';
 }
 
@@ -221,7 +221,7 @@ function openConfirmModal() {
 function closeConfirmModal() {
     confirmModal.classList.remove('active');
     modalOverlay.classList.remove('active');
-    
+
     setTimeout(() => {
         confirmModal.style.display = 'none';
         if (!modal.classList.contains('active')) {
@@ -233,13 +233,13 @@ function closeConfirmModal() {
 }
 
 // Edit existing student data
-function editStudent(editBtn){
+function editStudent(editBtn) {
     const row = editBtn.closest('tr');
     const studentId = parseInt(row.dataset.studentId);
 
     const student = students.find(student => student.id === studentId);
 
-    if (!student) 
+    if (!student)
         return;
 
     document.getElementById('group').value = student.group;
@@ -268,14 +268,14 @@ function initializeExistingRows() {
         if (!row.dataset.studentId) {
             const studentId = nextId++;
             row.dataset.studentId = studentId;
-            
+
             const cells = row.cells;
-            
+
             const fullName = cells[2].textContent.trim();
             const nameParts = fullName.split(' ');
             const surname = nameParts[0] || '';
             const name = nameParts.slice(1).join(' ') || '';
-            
+
             const student = {
                 id: studentId,
                 group: cells[1].textContent,
@@ -285,7 +285,7 @@ function initializeExistingRows() {
                 birthday: cells[4].textContent,
                 status: cells[5].textContent.includes('Online') ? 'online' : 'offline'
             };
-            
+
             students.push(student);
         }
     });
