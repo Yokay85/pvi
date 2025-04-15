@@ -1,0 +1,33 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    background-color: #bfbfbf;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.logo .cms-btn {
+    background: transparent;
+    font-family: 'Roboto', sans-serif;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+}
+
+.student-header {
+    margin-left: 400px;
+}
+
