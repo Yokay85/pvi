@@ -37,6 +37,9 @@ modalOverlay.addEventListener('click', function () {
     closeConfirmModal();
 });
 
+// Add event listener for form submission
+form.addEventListener('submit', handleFormSubmit);
+
 // Select/deselect all rows
 function toggleSelectAll() {
     const checkboxes = document.querySelectorAll('.student-select');
@@ -82,15 +85,9 @@ function formatDate(dateString) {
     return `${day}.${month}.${year}`;
 }
 
-// Add or update student data
-window.addStudent = function (e) {
-    e.preventDefault();
-
-    const isHtmlValidation = document.getElementById('validation-html').checked;
-
-    if (isHtmlValidation && !e.target.checkValidity()) {
-        return;
-    }
+// Handle the form submission
+function handleFormSubmit(e) {
+    e.preventDefault(); // Prevent default HTML form submission
 
     const formData = new FormData(form);
 
@@ -100,66 +97,84 @@ window.addStudent = function (e) {
         name: formData.get('name'),
         surname: formData.get('surname'),
         gender: formData.get('gender'),
-        birthday: formData.get('birthday')
+        birthday: formData.get('birthday'),
+        role: formData.get('role') // Add role field
     };
 
     if (isEditingMode && editingStudentId !== null) {
-        updateStudent(editingStudentId, studentData);
+        // Update student logic (assuming it uses fetch similarly)
+        // Example: updateStudentRequest(editingStudentId, formData);
+        // NOTE: The provided code doesn't show the fetch call for update,
+        // it calls a local `updateStudent` function. This might need adjustment
+        // if updates should also go to the server.
+        // For now, focusing on the ADD logic.
+        console.warn("Update logic via fetch not fully implemented in provided snippet.");
+        // Assuming local update for now based on existing code:
+        updateStudent(editingStudentId, studentData); // This updates local array/UI only
+        closeModal(); // Close modal after local update
+
     } else {
+        // Add student logic
         fetch(`${window.location.origin}${URL_ROOT}/public/index.php?action=addStudent`, {
             method: 'POST',
             body: formData
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.status}`);
-                }
-                // Check the Content-Type to ensure it's JSON
-                const contentType = response.headers.get('Content-Type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Response is not JSON');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Server response:', data);
-                if (data.success) {
-                    // Add the new student to the table
-                    const student = data.student;
-                    const formattedBirthday = formatDate(student.birthday);
-                    const tr = document.createElement("tr");
-                    tr.dataset.studentId = student.id;
+        .then(response => {
+            // ... existing response checking ...
+            if (!response.ok) {
+                // Try to get error message from response body if possible
+                return response.text().then(text => {
+                    throw new Error(`Network response was not ok: ${response.status}. ${text}`);
+                });
+            }
+            const contentType = response.headers.get('Content-Type');
+            if (!contentType || !contentType.includes('application/json')) {
+                return response.text().then(text => {
+                     throw new Error(`Response is not JSON. Received: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data);
+            if (data.success) {
+                // Add the new student to the table
+                const student = data.student;
+                const formattedBirthday = formatDate(student.birthday);
+                const tr = document.createElement("tr");
+                tr.dataset.studentId = student.id;
 
-                    tr.innerHTML = `
+                tr.innerHTML = `
                     <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
                     <td>${student.group_name}</td>
                     <td>${student.name}</td>
                     <td>${student.gender}</td>
                     <td>${formattedBirthday}</td>
-                    <td><span class="status-indicator ${student.status}"></span> ${student.status.charAt(0).toUpperCase() + student.status.slice(1)}</td>
+                    <td><span class="status-indicator ${student.status || 'offline'}"></span> ${student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : 'Offline'}</td>
                     <td>
                         <button class="edit-btn" aria-label="Edit student">Edit</button>
                         <button class="delete-btn" aria-label="Delete student">Delete</button>
                     </td>
                 `;
 
-                    table.appendChild(tr);
-                    student.birthday = formattedBirthday;
-                    students.push(student);
+                table.appendChild(tr);
+                // Update local students array
+                student.birthday = formattedBirthday; // Store formatted date locally
+                students.push(student);
 
-                    console.log('Added student:', JSON.stringify(student, null, 2));
-                    closeModal();
-                } else {
-                    console.error('Error adding student:', data.message);
-                    alert('Error adding student: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                alert('An error occurred while adding the student: ' + error.message);
-            });
+                console.log('Added student to UI:', JSON.stringify(student, null, 2));
+                closeModal();
+            } else {
+                console.error('Error adding student:', data.message);
+                alert('Error adding student: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            alert('An error occurred while adding the student: ' + error.message);
+        });
     }
-};
+}
 
 // Update existing student data (for editing)
 function updateStudent(studentId, formData) {
@@ -277,6 +292,9 @@ function editStudent(editBtn) {
         const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
         document.getElementById('birthday').value = formattedDate;
     }
+
+    // Assuming role cannot be edited, or add logic to populate role field if needed
+    // document.getElementById('role').value = student.role; 
 
     isEditingMode = true;
     editingStudentId = studentId;

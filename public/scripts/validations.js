@@ -88,8 +88,7 @@ function validateField(field, skipVisuals = false) {
  */
 function initializeValidation() {
     const form = document.getElementById('student-form');
-    const htmlRadio = document.getElementById('validation-html');
-    const jsRadio = document.getElementById('validation-js');
+    // Removed htmlRadio and jsRadio references
     const formFields = form.querySelectorAll('input:not([type="radio"]), select');
     const birthdayField = document.getElementById('birthday');
 
@@ -111,67 +110,43 @@ function initializeValidation() {
 
     setupDateValidation();
 
-    /**
-     * Toggles between HTML5 and JS validation methods
-     */
-    function toggleValidationMethod() {
-        const useHTML = htmlRadio.checked;
-
-        form.setAttribute('novalidate', !useHTML);
-
-        touchedFields.clear();
-        formFields.forEach(field => {
-            field.parentElement.classList.remove('error', 'valid');
-            const errorElement = document.getElementById(`${field.id}-error`);
-            if (errorElement) errorElement.textContent = '';
-        });
-    }
-
-    htmlRadio.addEventListener('change', toggleValidationMethod);
-    jsRadio.addEventListener('change', toggleValidationMethod);
+    // Removed toggleValidationMethod function and its calls
 
     form.addEventListener('submit', function (e) {
-        e.preventDefault();
+        // Validate all fields first
+        formFields.forEach(field => touchedFields.add(field.id)); // Ensure errors show even if not touched before submit
 
-        if (jsRadio.checked) {
-            formFields.forEach(field => touchedFields.add(field.id));
-
-            let isFormValid = true;
-            formFields.forEach(field => {
-                if (!validateField(field)) {
-                    isFormValid = false;
-                }
-            });
-
-            if (isFormValid) {
-                window.addStudent(e);
+        let isFormValid = true;
+        formFields.forEach(field => {
+            if (!validateField(field)) { // validateField now also handles showing errors
+                isFormValid = false;
             }
-        } else {
-            if (form.checkValidity()) {
-                window.addStudent(e);
-            } else {
-                form.reportValidity();
-            }
+        });
+
+        if (!isFormValid) {
+            e.preventDefault(); // Prevent submission ONLY if validation fails
+            console.log("Validation failed, preventing submission.");
         }
+        // If valid, do nothing here - allow the event to proceed to the table.js listener
+        // REMOVED: window.addStudent(e);
     });
 
     formFields.forEach(field => {
         field.addEventListener('input', function () {
             touchedFields.add(field.id);
-            if (jsRadio.checked) {
-                validateField(field);
-            }
+            // Always validate with JS on input
+            validateField(field);
         });
 
         field.addEventListener('blur', function () {
             touchedFields.add(field.id);
-            if (jsRadio.checked) {
-                validateField(field);
-            }
+            // Always validate with JS on blur
+            validateField(field);
         });
     });
 
-    toggleValidationMethod();
+    // Ensure novalidate is always set for JS validation
+    form.setAttribute('novalidate', true);
 }
 
 window.addEventListener('DOMContentLoaded', initializeValidation);

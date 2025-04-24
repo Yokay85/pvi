@@ -1,4 +1,7 @@
-<?php $students = $students ?? []; ?>
+<?php
+// Initialize $students array if it's not already set.
+$students = $students ?? [];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +31,7 @@
 <body>
 
 <script>
+    // Define the root URL for JavaScript usage.
     const URL_ROOT = "<?= URL_ROOT ?>";
 </script>
 
@@ -146,7 +150,10 @@
                 </tr>
                 </thead>
                 <tbody id="students">
-                <?php foreach ($students as $student): ?>
+                <?php
+                // Loop through the students array and display each student's data in a table row.
+                foreach ($students as $student):
+                ?>
                     <tr data-student-id="<?php echo htmlspecialchars($student['id']); ?>">
                         <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
                         <td><?php echo htmlspecialchars($student['group_name']); ?></td>
@@ -154,6 +161,7 @@
                         <td><?php echo htmlspecialchars($student['gender']); ?></td>
                         <td>
                             <?php
+                            // Format the birthday date.
                             $date = new DateTime($student['birthday']);
                             echo $date->format('d.m.Y');
                             ?>
@@ -187,16 +195,6 @@
         <button class="close-btn" aria-label="Close modal" id="close-btn">X</button>
     </div>
     <div class="modal-body">
-        <div class="validation-toggle">
-            <label>Метод валідації:</label>
-            <div>
-                <input type="radio" id="validation-html" name="validation-method" value="html" checked>
-                <label for="validation-html">HTML</label>
-
-                <input type="radio" id="validation-js" name="validation-method" value="js">
-                <label for="validation-js">JavaScript</label>
-            </div>
-        </div>
         <form id="student-form" novalidate action="/index.php?action=addStudent" method="POST">
             <div class="form-group">
                 <label for="group">Group</label>
@@ -222,47 +220,4 @@
                 <div class="error-message" id="surname-error"></div>
             </div>
             <div class="form-group">
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender" required>
-                    <option value="">Select gender</option>
-                    <option value="M">Male</option>
-                    <option value="F">Female</option>
-                </select>
-                <div class="error-message" id="gender-error"></div>
-            </div>
-            <div class="form-group">
-                <label for="birthday">Birthday</label>
-                <input type="date" id="birthday" name="birthday" required>
-                <div class="error-message" id="birthday-error"></div>
-            </div>
-            <div class="form-buttons">
-                <button type="submit" class="submit-btn" id="submit-btn">Save</button>
-                <button type="button" class="cancel-btn" id="cancel-btn">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="modal-content" id="confirmModal" style="display: none;">
-    <div class="modal-header">
-        <h3>Confirm Deletion</h3>
-        <button class="close-btn" aria-label="Close confirmation modal" id="close-confirm-btn">X</button>
-    </div>
-    <div class="modal-body">
-        <p id="confirm-message">Are you sure you want to delete this student?</p>
-        <div class="form-buttons">
-            <button type="button" class="submit-btn" id="confirm-yes-btn">Yes</button>
-            <button type="button" class="cancel-btn" id="confirm-no-btn">No</button>
-        </div>
-    </div>
-</div>
-
-<div id="modal-overlay" class="modal-overlay"></div>
-
-<script src="<?= URL_ROOT ?>/public/scripts/nottification.js"></script>
-<script src="<?= URL_ROOT ?>/public/scripts/table.js"></script>
-<script src="<?= URL_ROOT ?>/public/scripts/burger-menu.js"></script>
-<script src="<?= URL_ROOT ?>/public/scripts/validations.js"></script>
-</body>
-
-</html>
+               
