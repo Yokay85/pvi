@@ -1,7 +1,10 @@
 <?php
 class TaskController {
     public function index() {
-        // Load the tasks view
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . URL_ROOT . '/public/index.php?action=login');
+            exit;
+        }
         require_once __DIR__ . '/../views/Task/task.php';
     }
 }

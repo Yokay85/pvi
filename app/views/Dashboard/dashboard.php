@@ -32,8 +32,9 @@
 <header id="header">
     <div class="header">
         <div class="logo">
-            <button class="cms-btn" onclick="window.location.href='./index.html'">CMS</button>
+            <button class="cms-btn" onclick="window.location.href='<?= URL_ROOT ?>/public/index.php'">CMS</button> <!-- Corrected link -->
         </div>
+         <?php if (isset($_SESSION['user_id'])): ?>
         <div class="user-controls">
             <div class="bell" id="bell">
                 <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="25px"
@@ -90,13 +91,18 @@
             </div>
             <div class="profile">
                 <img src="<?= URL_ROOT ?>/public/sourse/avatar.png" alt="Avatar">
-                <span style="font-family: 'Roboto', sans-serif;">PATREGO</span>
+                 <span style="font-family: 'Roboto', sans-serif;"><?= htmlspecialchars($_SESSION['username'] ?? 'User') ?></span> <!-- Display username -->
                 <div class="profile-popup">
                     <button>Profile</button>
-                    <button>Log Out</button>
+                    <button onclick="window.location.href='<?= URL_ROOT ?>/public/index.php?action=logout'">Log Out</button> <!-- Logout Link -->
                 </div>
             </div>
         </div>
+         <?php else: ?>
+        <div class="user-controls">
+             <button class="login-btn" onclick="window.location.href='<?= URL_ROOT ?>/public/index.php?action=login'">Login</button>
+        </div>
+        <?php endif; ?>
     </div>
 </header>
 
@@ -112,9 +118,13 @@
 
         <nav id="navigation" class="navigation">
             <ul>
+                 <?php if (isset($_SESSION['user_id'])): // Show Dashboard and Tasks only if logged in ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=dashboard"style="font-weight: bold">Dashboard</a></li>
+                 <?php endif; ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=index">Students</a></li>
+                 <?php if (isset($_SESSION['user_id'])): // Show Dashboard and Tasks only if logged in ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=task">Tasks</a></li>
+                 <?php endif; ?>
             </ul>
         </nav>
     </aside>
@@ -126,8 +136,10 @@
     </section>
 </main>
 
-<script src="scripts/nottification.js"></script>
-<script src="scripts/burger-menu.js"></script>
+<?php if (isset($_SESSION['user_id'])): ?>
+<script src="<?= URL_ROOT ?>/public/scripts/nottification.js"></script>
+<?php endif; ?>
+<script src="<?= URL_ROOT ?>/public/scripts/burger-menu.js"></script>
 </body>
 
 </html>

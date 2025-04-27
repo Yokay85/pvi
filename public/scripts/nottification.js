@@ -1,33 +1,42 @@
-const bell = document.getElementById('bell');
-const notificationDot = document.getElementById('notificationDot');
-const notificationPopup = document.getElementById('notificationPopup');
+document.addEventListener('DOMContentLoaded', () => {
+    const bell = document.getElementById('bell');
+    const notificationDot = document.getElementById('notificationDot');
+    const notificationPopup = document.getElementById('notificationPopup');
 
-function addShakeEffect() {
-    if (notificationDot.style.display !== 'none') {
-        bell.classList.add('shake');
+    function addShakeEffect() {
+        // Перевіряємо наявність елементів
+        if (notificationDot && bell && notificationDot.style.display !== 'none') {
+            bell.classList.add('shake');
+        }
     }
-}
 
-window.addEventListener('DOMContentLoaded', () => {
+    // Викликаємо функцію після завантаження DOM
     addShakeEffect();
-});
 
-bell.addEventListener('click', () => {
-    window.open('messages.html', '_blank');
-    notificationDot.style.display = 'none';
-    bell.classList.remove('shake');
-});
+    // Перевіряємо наявність bell перед додаванням слухачів
+    if (bell) {
+        bell.addEventListener('click', () => {
+            window.open('messages.html', '_blank');
+            if (notificationDot) {
+                notificationDot.style.display = 'none';
+            }
+            bell.classList.remove('shake');
+        });
 
-bell.addEventListener('mouseover', () => {
+        bell.addEventListener('mouseover', () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                return;
+            }
+            if (notificationPopup) {
+                notificationPopup.style.display = 'block';
+            }
+        });
 
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile) {
-        return;
+        bell.addEventListener('mouseout', () => {
+            if (notificationPopup) {
+                notificationPopup.style.display = 'none';
+            }
+        });
     }
-    notificationPopup.style.display = 'block';
 });
-
-bell.addEventListener('mouseout', () => {
-    notificationPopup.style.display = 'none';
-}
-);

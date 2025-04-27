@@ -1,9 +1,9 @@
 <?php
-// Налаштування автозавантаження та ініціалізація
+session_start();
+
 require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../config/config.php';
 
-// У public/index.php перед обробкою маршрутів
 $requestUri = $_SERVER['REQUEST_URI'];
 if (preg_match('/\.css$/', $requestUri)) {
     $filePath = __DIR__ . $requestUri;
@@ -14,6 +14,5 @@ if (preg_match('/\.css$/', $requestUri)) {
     }
 }
 
-// Обробка запитів (маршрутизація)
 $controller = new Controller();
 $controller->handleRequest();

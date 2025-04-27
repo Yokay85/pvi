@@ -42,8 +42,9 @@ $students = $students ?? [];
 <header id="header">
     <div class="header">
         <div class="logo">
-            <button class="cms-btn" onclick="window.location.href='/index.php'">CMS</button>
+            <button class="cms-btn" onclick="window.location.href='<?= URL_ROOT ?>/public/index.php'">CMS</button> <!-- Corrected link -->
         </div>
+        <?php if (isset($_SESSION['user_id'])): ?>
         <div class="user-controls">
             <div class="bell" id="bell">
                 <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="25px"
@@ -100,13 +101,18 @@ $students = $students ?? [];
             </div>
             <div class="profile">
                 <img src="<?= URL_ROOT ?>/public/sourse/avatar.png" alt="Avatar">
-                <span style="font-family: 'Roboto', sans-serif;">PATREGO</span>
+                <span style="font-family: 'Roboto', sans-serif;"><?= htmlspecialchars($_SESSION['username'] ?? 'User') ?></span> <!-- Display username -->
                 <div class="profile-popup">
                     <button>Profile</button>
-                    <button>Log Out</button>
+                    <button onclick="window.location.href='<?= URL_ROOT ?>/public/index.php?action=logout'">Log Out</button> <!-- Logout Link -->
                 </div>
             </div>
         </div>
+        <?php else: ?>
+        <div class="user-controls">
+             <button class="login-btn" onclick="openLoginModal()">Login</button> <!-- Changed onclick -->
+        </div>
+        <?php endif; ?>
     </div>
 </header>
 
@@ -122,9 +128,13 @@ $students = $students ?? [];
 
         <nav id="navigation" class="navigation">
             <ul>
+                <?php if (isset($_SESSION['user_id'])): // Show Dashboard and Tasks only if logged in ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=dashboard">Dashboard</a></li>
+                <?php endif; ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=index" style="font-weight: bold;">Students</a></li>
+                <?php if (isset($_SESSION['user_id'])): // Show Dashboard and Tasks only if logged in ?>
                 <li><a href="<?= URL_ROOT ?>/public/index.php?action=task">Tasks</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </aside>
@@ -132,21 +142,27 @@ $students = $students ?? [];
     <section class="main-content">
         <div class="table-controls">
             <h2>Students</h2>
+            <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): // Only show Add button if logged in as admin ?>
             <button class="add-btn" aria-label="Add student" id="add-btn">Add</button>
+            <?php endif; ?>
         </div>
         <div class="table-container">
             <table class="students-table">
                 <thead>
                 <tr>
+                    <?php if (isset($_SESSION['user_id'])): // Only show checkbox if logged in ?>
                     <th scope="col" aria-label="Select students">
                         <input type="checkbox" id="selectAll" aria-label="Select all students">
                     </th>
+                    <?php endif; ?>
                     <th>Group</th>
                     <th>Name</th>
                     <th>Gender</th>
                     <th>Birthday</th>
                     <th>Status</th>
+                    <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): // Only show options if logged in as admin ?>
                     <th>Options</th>
+                    <?php endif; ?>
                 </tr>
                 </thead>
                 <tbody id="students">
@@ -155,7 +171,9 @@ $students = $students ?? [];
                 foreach ($students as $student):
                 ?>
                     <tr data-student-id="<?php echo htmlspecialchars($student['id']); ?>">
+                        <?php if (isset($_SESSION['user_id'])): ?>
                         <td><input type="checkbox" class="student-select" aria-label="Select student"></td>
+                        <?php endif; ?>
                         <td><?php echo htmlspecialchars($student['group_name']); ?></td>
                         <td><?php echo htmlspecialchars($student['name']); ?></td>
                         <td><?php echo htmlspecialchars($student['gender']); ?></td>
@@ -170,25 +188,81 @@ $students = $students ?? [];
                             <span class="status-indicator <?php echo $student['status']; ?>"></span>
                             <?php echo ucfirst($student['status']); ?>
                         </td>
+                        <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): // Only show options if logged in as admin ?>
                         <td>
                             <button class="edit-btn" aria-label="Edit student">Edit</button>
                             <button class="delete-btn" aria-label="Delete student">Delete</button>
                         </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="pagination">
-                <button id="prev-page" aria-label="Previous page">&laquo; Prev</button>
-                <button class="page-number active" data-page="1">1</button>
-                <button class="page-number" data-page="2">2</button>
-                <button class="page-number" data-page="3">3</button>
-                <button id="next-page" aria-label="Next page">Next &raquo;</button>
+                <button id="prev-page" aria-label="Previous page" <?= $paginationData['currentPage'] <= 1 ? 'disabled' : '' ?>>&laquo; Prev</button>
+                
+                <?php
+                // Generate page numbers dynamically
+                $totalPages = $paginationData['totalPages'];
+                $currentPage = $paginationData['currentPage'];
+                
+                // Display up to 5 page buttons, centered around current page if possible
+                $startPage = max(1, min($currentPage - 2, $totalPages - 4));
+                $endPage = min($totalPages, max(5, $currentPage + 2));
+                
+                if ($startPage > 1) {
+                    echo '<button class="page-number" data-page="1">1</button>';
+                    if ($startPage > 2) {
+                        echo '<span class="ellipsis">...</span>';
+                    }
+                }
+                
+                for ($i = $startPage; $i <= $endPage; $i++) {
+                    $activeClass = $i == $currentPage ? 'active' : '';
+                    echo "<button class=\"page-number $activeClass\" data-page=\"$i\">$i</button>";
+                }
+                
+                if ($endPage < $totalPages) {
+                    if ($endPage < $totalPages - 1) {
+                        echo '<span class="ellipsis">...</span>';
+                    }
+                    echo "<button class=\"page-number\" data-page=\"$totalPages\">$totalPages</button>";
+                }
+                ?>
+                
+                <button id="next-page" aria-label="Next page" <?= $paginationData['currentPage'] >= $paginationData['totalPages'] ? 'disabled' : '' ?>>Next &raquo;</button>
             </div>
         </div>
     </section>
 </main>
 
+<div id="modal-overlay" class="modal-overlay"></div>
+
+<!-- Модальне вікно для логіну -->
+<div class="modal-content" id="loginModal" style="display: none;">
+    <div class="modal-header">
+        <h3>Login</h3>
+        <button class="close-btn" aria-label="Close login modal" id="close-login-btn">X</button>
+    </div>
+    <div class="modal-body">
+        <div id="login-error-message" class="error-message" style="display: none;"></div>
+        <form id="login-form" method="POST">
+            <div class="form-group">
+                <label for="login-identifier">Username or Email</label>
+                <input type="text" id="login-identifier" name="identifier" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="submit-btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модальне вікно для додавання/редагування студентів -->
 <div class="modal-content" id="modal">
     <div class="modal-header">
         <h3>Add student</h3>
@@ -220,4 +294,55 @@ $students = $students ?? [];
                 <div class="error-message" id="surname-error"></div>
             </div>
             <div class="form-group">
-               
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <div class="error-message" id="gender-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                <input type="date" id="birthday" name="birthday" required>
+                <div class="error-message" id="birthday-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" required>
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <div class="error-message" id="role-error"></div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="submit-btn" id="submit-btn">Save</button>
+                <button type="button" class="cancel-btn" id="cancel-btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модальне вікно для підтвердження видалення -->
+<div class="modal-content" id="confirmModal" style="display: none;">
+    <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="close-btn" aria-label="Close confirmation modal" id="close-confirm-btn">X</button>
+    </div>
+    <div class="modal-body">
+        <p id="confirm-message">Are you sure you want to delete this student?</p>
+        <div class="form-buttons">
+            <button type="button" class="submit-btn" id="confirm-yes-btn">Yes</button>
+            <button type="button" class="cancel-btn" id="confirm-no-btn">No</button>
+        </div>
+    </div>
+</div>
+
+<script src="<?= URL_ROOT ?>/public/scripts/nottification.js"></script>
+<script src="<?= URL_ROOT ?>/public/scripts/table.js"></script>
+<script src="<?= URL_ROOT ?>/public/scripts/burger-menu.js"></script>
+<script src="<?= URL_ROOT ?>/public/scripts/validations.js"></script>
+<script src="<?= URL_ROOT ?>/public/scripts/auth.js"></script>
+</body>
+
+</html>
